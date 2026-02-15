@@ -128,6 +128,10 @@ server/
 - Issue に着手する際、Inkdrop の `03-PlanCode` ノートブックにプランノートを作成する
 - ノート末尾の Status チェックリストは、各ステップ完了時に即座にチェックを入れて更新する
 - 作業完了時は Outcome セクションを追記し、ノートの status を `completed` に変更する
+- **実装計画ノート（`note:D7sW-XB4`）の Issue 一覧テーブルのステータスを、Issue の着手・完了時に更新する**
+  - ⬜ 未着手 / 🔵 作業中 / 🔶 PR レビュー中 / ✅ Done
+- 各 Issue のプランノートには、実装計画ノートへのリンクを含める
+  - `[Mnemo 実装計画](inkdrop://note/D7sW-XB4)`
 
 ## Development Phases
 

@@ -17,11 +17,4 @@ final class CollectionItem {
         self.screenshot = screenshot
         self.createdAt = createdAt
     }
-
-    // Prevent duplicates for the same (collection, screenshot) pair.
-    static var uniqueConstraints: [UniqueConstraint] {
-        [
-            .init(\CollectionItem.collection, \CollectionItem.screenshot)
-        ]
-    }
 }
