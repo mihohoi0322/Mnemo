@@ -28,8 +28,19 @@ struct DetailView: View {
                 metadataSection
                     .padding(.horizontal, 16)
 
-                // MARK: - Phase 2 以降の拡張用スペース
-                // OCR テキスト・タグ表示はここに追加予定
+                // MARK: - タグ
+                if viewModel.hasAutoTags {
+                    tagsSection
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                }
+
+                // MARK: - OCR テキスト
+                if viewModel.hasOCRText {
+                    ocrTextSection
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                }
 
                 Spacer(minLength: 80)
             }
@@ -119,6 +130,64 @@ struct DetailView: View {
             }
             .frame(height: 300)
         }
+    }
+
+    private var tagsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("タグ")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(.primary)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(viewModel.autoTags, id: \.id) { tag in
+                        TagChip(tag: tag)
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.background)
+                .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
+        )
+    }
+
+    private var ocrTextSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            DisclosureGroup("OCR テキスト") {
+                VStack(alignment: .leading, spacing: 12) {
+                    if let ocrText = viewModel.ocrText, !ocrText.isEmpty {
+                        Text(ocrText)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.primary)
+                            .textSelection(.enabled)
+                    }
+
+                    if let description = viewModel.descriptionText, !description.isEmpty {
+                        Divider()
+
+                        Text("AI 説明")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(.secondary)
+
+                        Text(description)
+                            .font(.system(size: 14))
+                            .foregroundStyle(.primary)
+                            .textSelection(.enabled)
+                    }
+                }
+                .padding(.top, 8)
+            }
+            .font(.system(size: 16, weight: .medium))
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.background)
+                .shadow(color: .black.opacity(0.05), radius: 4, y: 2)
+        )
     }
 
     private var metadataSection: some View {

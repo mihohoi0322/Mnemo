@@ -97,4 +97,38 @@ final class DetailViewModel {
             .red
         }
     }
+
+    // MARK: - Analysis Results
+
+    /// OCR テキスト（解析完了時のみ表示）
+    var ocrText: String? {
+        screenshot.ocrText?.text
+    }
+
+    /// AI 生成の説明文
+    var descriptionText: String? {
+        screenshot.ocrText?.descriptionText
+    }
+
+    /// 自動タグ一覧（信頼度降順）
+    var autoTags: [Tag] {
+        screenshot.tags
+            .filter { $0.source == .auto }
+            .sorted { ($0.confidence ?? 0) > ($1.confidence ?? 0) }
+    }
+
+    /// タグが存在するか
+    var hasTags: Bool {
+        !screenshot.tags.isEmpty
+    }
+
+    /// 自動タグが存在するか
+    var hasAutoTags: Bool {
+        !autoTags.isEmpty
+    }
+
+    /// OCR テキストが存在するか
+    var hasOCRText: Bool {
+        screenshot.ocrText != nil
+    }
 }
