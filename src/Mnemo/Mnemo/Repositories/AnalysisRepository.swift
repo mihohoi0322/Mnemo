@@ -35,9 +35,11 @@ final class AnalysisRepository {
         try? modelContext.save()
 
         do {
-            // 2. 画像ファイルを読み込み
+            // 2. 画像ファイルを読み込み（バックグラウンドで実行）
             let imageURL = try ImageStorage.resolveURL(relativePath: screenshot.localPath)
-            let imageData = try Data(contentsOf: imageURL)
+            let imageData = try await Task.detached(priority: .background) {
+                try Data(contentsOf: imageURL)
+            }.value
 
             // 3. APIClient で /analyze に送信
             let response = try await apiClient.analyze(
@@ -70,13 +72,18 @@ final class AnalysisRepository {
 
     /// API レスポンスの解析結果を SwiftData に保存する
     private func saveAnalysisResult(_ response: AnalyzeResponse, for screenshot: Screenshot) {
-        // OCRText の作成
-        let ocrText = OCRText(
-            text: response.ocr_text,
-            descriptionText: response.description,
-            screenshot: screenshot
-        )
-        modelContext.insert(ocrText)
+        // OCRText の作成 / 更新（Screenshot.ocrText は to-one のため）
+        if let existingOCRText = screenshot.ocrText {
+            existingOCRText.text = response.ocr_text
+            existingOCRText.descriptionText = response.description
+        } else {
+            let ocrText = OCRText(
+                text: response.ocr_text,
+                descriptionText: response.description,
+                screenshot: screenshot
+            )
+            modelContext.insert(ocrText)
+        }
 
         // Tag（auto）の作成
         for tagItem in response.tags {
@@ -89,11 +96,17 @@ final class AnalysisRepository {
             modelContext.insert(tag)
         }
 
-        // Embedding の作成
-        let embedding = Embedding(
-            floats: response.embedding,
-            screenshot: screenshot
-        )
-        modelContext.insert(embedding)
+        // Embedding の作成 / 更新（Screenshot.embedding は to-one のため）
+        if let existingEmbedding = screenshot.embedding {
+            // floats は computed property なので、vector を直接更新
+            let data = response.embedding.withUnsafeBufferPointer { Data(buffer: $0) }
+            existingEmbedding.vector = data
+        } else {
+            let embedding = Embedding(
+                floats: response.embedding,
+                screenshot: screenshot
+            )
+            modelContext.insert(embedding)
+        }
     }
 }

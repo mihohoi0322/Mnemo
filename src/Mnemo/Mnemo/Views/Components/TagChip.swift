@@ -31,10 +31,24 @@ private extension Color {
     /// 16 進数文字列から Color を生成する
     /// - Parameter hex: "RRGGBB" 形式の文字列（# は省略可）
     init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
-        let scanner = Scanner(string: hex)
+        let trimmedHex = hex.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+
+        // 入力検証: 長さが 6 文字 (RRGGBB) であることを確認
+        guard trimmedHex.count == 6 else {
+            assertionFailure("Invalid hex color string length: \(trimmedHex)")
+            self = .black
+            return
+        }
+
+        let scanner = Scanner(string: trimmedHex)
         var rgbValue: UInt64 = 0
-        scanner.scanHexInt64(&rgbValue)
+
+        // scan 成功を確認し、失敗時は fallback する
+        guard scanner.scanHexInt64(&rgbValue) else {
+            assertionFailure("Failed to scan hex color: \(trimmedHex)")
+            self = .black
+            return
+        }
 
         let r = Double((rgbValue & 0xFF0000) >> 16) / 255.0
         let g = Double((rgbValue & 0x00FF00) >> 8) / 255.0
