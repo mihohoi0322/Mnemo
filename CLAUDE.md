@@ -116,6 +116,19 @@ server/
 - Embedding は 512 次元（text-embedding-3-small の dimensions パラメータで指定）
 - 検索は ベクトル類似度 + OCR 全文検索 + タグ一致 の合成スコアでランキング
 
+## Git Workflow
+
+- Issue に着手する際は、必ず `feature/<issue番号>-<簡潔な説明>` ブランチを `main` から作成する
+  - 例: `feature/3-image-import`, `feature/5-server-ai-api`
+- 作業完了後は PR を作成し、`Closes #<issue番号>` を本文に含める
+- `main` ブランチに直接コミットしない
+
+## Inkdrop 連携
+
+- Issue に着手する際、Inkdrop の `03-PlanCode` ノートブックにプランノートを作成する
+- ノート末尾の Status チェックリストは、各ステップ完了時に即座にチェックを入れて更新する
+- 作業完了時は Outcome セクションを追記し、ノートの status を `completed` に変更する
+
 ## Development Phases
 
 現在のフェーズを確認し、そのフェーズの完了条件に集中すること。
