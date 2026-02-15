@@ -48,7 +48,7 @@ async def embed(request: EmbedRequest) -> EmbedResponse:
 
         raise HTTPException(
             status_code=500,
-            detail=f"埋め込みベクトル生成中にエラーが発生しました: {error_msg}",
+            detail="埋め込みベクトル生成中に予期しないエラーが発生しました。時間をおいて再度お試しください。",
         ) from e
 
 
@@ -83,5 +83,5 @@ async def search_embed(request: SearchEmbedRequest) -> SearchEmbedResponse:
 
         raise HTTPException(
             status_code=500,
-            detail=f"検索埋め込みベクトル生成中にエラーが発生しました: {error_msg}",
+            detail="検索埋め込みベクトル生成中に予期しないエラーが発生しました。時間をおいて再度お試しください。",
         ) from e

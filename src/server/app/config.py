@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,8 +12,12 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # Azure AI Foundry のエンドポイント URL
-    azure_ai_project_endpoint: str = ""
+    # Azure AI Foundry のエンドポイント URL (必須)
+    azure_ai_project_endpoint: str = Field(
+        ...,
+        min_length=1,
+        description="Azure AI Foundry プロジェクトエンドポイント URL",
+    )
     # 旧: connection_string（後方互換用、未使用）
     azure_ai_project_connection_string: str = ""
     azure_openai_deployment_vision: str = "gpt-5-mini"

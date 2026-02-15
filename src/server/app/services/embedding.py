@@ -2,22 +2,24 @@
 
 import logging
 
-from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
+from azure.ai.projects.aio import AIProjectClient
+from azure.identity.aio import DefaultAzureCredential
 
 from app.config import settings
 
 logger = logging.getLogger(__name__)
 
 
-def _get_openai_client():
+async def _get_openai_client():
     """Azure AI Foundry 経由で OpenAI 互換クライアントを取得する"""
     credential = DefaultAzureCredential()
     project_client = AIProjectClient(
         endpoint=settings.azure_ai_project_endpoint,
         credential=credential,
     )
-    return project_client.get_openai_client()
+    openai_client = await project_client.get_openai_client()
+    await credential.close()
+    return openai_client
 
 
 async def generate_embedding(text: str) -> list[float]:
@@ -33,9 +35,9 @@ async def generate_embedding(text: str) -> list[float]:
     Raises:
         Exception: Azure AI Foundry のエラー
     """
-    openai_client = _get_openai_client()
+    openai_client = await _get_openai_client()
 
-    response = openai_client.embeddings.create(
+    response = await openai_client.embeddings.create(
         model=settings.azure_openai_deployment_embedding,
         input=[text],
         dimensions=settings.embedding_dimensions,

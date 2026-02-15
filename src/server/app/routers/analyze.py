@@ -101,5 +101,5 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
 
         raise HTTPException(
             status_code=500,
-            detail=f"画像解析中にエラーが発生しました: {error_msg}",
+            detail="画像解析中に予期しないエラーが発生しました。時間をおいて再度お試しください。",
         ) from e

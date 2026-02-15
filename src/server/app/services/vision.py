@@ -3,8 +3,8 @@
 import json
 import logging
 
-from azure.ai.projects import AIProjectClient
-from azure.identity import DefaultAzureCredential
+from azure.ai.projects.aio import AIProjectClient
+from azure.identity.aio import DefaultAzureCredential
 
 from app.config import settings
 
@@ -42,14 +42,16 @@ SYSTEM_PROMPT = """\
 """
 
 
-def _get_openai_client():
+async def _get_openai_client():
     """Azure AI Foundry 経由で OpenAI 互換クライアントを取得する"""
     credential = DefaultAzureCredential()
     project_client = AIProjectClient(
         endpoint=settings.azure_ai_project_endpoint,
         credential=credential,
     )
-    return project_client.get_openai_client()
+    openai_client = await project_client.get_openai_client()
+    await credential.close()
+    return openai_client
 
 
 async def analyze_image(
@@ -69,7 +71,7 @@ async def analyze_image(
         ValueError: AI の応答が不正な JSON の場合
         Exception: Azure AI Foundry のエラー
     """
-    openai_client = _get_openai_client()
+    openai_client = await _get_openai_client()
 
     user_content: list[dict] = []
 
@@ -90,8 +92,8 @@ async def analyze_image(
         }
     )
 
-    # OpenAI 互換クライアントで Chat Completion を呼び出す
-    response = openai_client.chat.completions.create(
+    # OpenAI 互換クライアントで Chat Completion を呼び出す (async)
+    response = await openai_client.chat.completions.create(
         model=settings.azure_openai_deployment_vision,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -107,7 +109,8 @@ async def analyze_image(
     if not raw_content:
         raise ValueError("AI からの応答が空です")
 
-    logger.info("Vision API raw response: %s", raw_content[:200])
+    # PII を含む可能性があるため、ログには長さのみ記録
+    logger.info("Vision API response received: %d characters", len(raw_content))
 
     try:
         result = json.loads(raw_content)
@@ -115,15 +118,31 @@ async def analyze_image(
         raise ValueError(f"AI の応答が不正な JSON です: {e}") from e
 
     # 必須フィールドの検証とデフォルト値
+    # tags が list 以外の場合はエラーにする
+    tags_raw = result.get("tags", [])
+    if not isinstance(tags_raw, list):
+        raise ValueError(
+            f"AI 応答の tags フィールドが list ではありません: {type(tags_raw)}"
+        )
+
+    tags = []
+    for tag in tags_raw:
+        if not isinstance(tag, dict):
+            logger.warning("Invalid tag item (not dict): %s", type(tag))
+            continue
+        label = tag.get("label", "")
+        if not label or not isinstance(label, str):
+            continue
+        confidence_raw = tag.get("confidence", 0.5)
+        try:
+            confidence = min(max(float(confidence_raw), 0.0), 1.0)
+        except (ValueError, TypeError):
+            logger.warning("Invalid confidence value: %s", confidence_raw)
+            confidence = 0.5
+        tags.append({"label": label, "confidence": confidence})
+
     return {
         "ocr_text": result.get("ocr_text", ""),
         "description": result.get("description", ""),
-        "tags": [
-            {
-                "label": tag.get("label", ""),
-                "confidence": min(max(float(tag.get("confidence", 0.5)), 0.0), 1.0),
-            }
-            for tag in result.get("tags", [])
-            if tag.get("label")
-        ],
+        "tags": tags,
     }

@@ -11,7 +11,10 @@ class EmbedResponse(BaseModel):
     """テキスト埋め込みレスポンス"""
 
     embedding: list[float] = Field(
-        ..., description="512 次元の埋め込みベクトル"
+        ...,
+        min_length=512,
+        max_length=512,
+        description="512 次元の埋め込みベクトル",
     )
 
 
@@ -25,5 +28,8 @@ class SearchEmbedResponse(BaseModel):
     """検索クエリ埋め込みレスポンス"""
 
     embedding: list[float] = Field(
-        ..., description="512 次元の埋め込みベクトル"
+        ...,
+        min_length=512,
+        max_length=512,
+        description="512 次元の埋め込みベクトル",
     )
