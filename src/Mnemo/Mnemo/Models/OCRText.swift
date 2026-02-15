@@ -4,21 +4,23 @@ import SwiftData
 @Model
 final class OCRText {
     var text: String
-    var descriptionText: String
+    var description: String
     var language: String?
     var createdAt: Date
 
-    var screenshot: Screenshot?
+    var screenshot: Screenshot
 
     init(
         text: String,
-        descriptionText: String,
+        description: String,
         language: String? = nil,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        screenshot: Screenshot
     ) {
         self.text = text
-        self.descriptionText = descriptionText
+        self.description = description
         self.language = language
         self.createdAt = createdAt
+        self.screenshot = screenshot
     }
 }

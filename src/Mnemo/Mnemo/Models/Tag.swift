@@ -14,19 +14,21 @@ final class Tag {
     var confidence: Double?
     var createdAt: Date
 
-    var screenshot: Screenshot?
+    var screenshot: Screenshot
 
     init(
         id: UUID = UUID(),
         label: String,
         source: TagSource,
         confidence: Double? = nil,
-        createdAt: Date = Date()
+        createdAt: Date = Date(),
+        screenshot: Screenshot
     ) {
         self.id = id
         self.label = label
         self.source = source
         self.confidence = confidence
         self.createdAt = createdAt
+        self.screenshot = screenshot
     }
 }

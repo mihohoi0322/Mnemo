@@ -66,7 +66,7 @@ Mnemo/
 │   └── UI/                # UI 設計ドキュメント
 ├── src/                   # ソースコード（実装予定）
 │   ├── Mnemo/             # iOS アプリ
-│   └── server/            # Azure Functions
+│   └── server/            # Azure Functions（Phase 1+ で実装予定）
 └── .github/
     ├── prompts/
     └── skills/
@@ -76,7 +76,7 @@ Mnemo/
 
 | Phase | 内容 | 状態 |
 |---|---|---|
-| 0 | プロジェクトセットアップ | 未着手 |
+| 0 | プロジェクトセットアップ | 進行中 |
 | 1 | ローカル基盤（画像取り込み + 保存） | 未着手 |
 | 2 | クラウド連携（AI 分析） | 未着手 |
 | 3 | 検索機能（セマンティック検索） | 未着手 |
@@ -102,7 +102,18 @@ open src/Mnemo/Mnemo.xcodeproj
 
 ### サーバー（Azure Functions）
 
+> **注**: Phase 0 ではサーバー実装（`src/server`、`requirements.txt` など）はまだ含まれていません。  
+> この節は Phase 1 以降で実装予定のバックエンドのプレースホルダです。
+
 ```bash
+# サーバー実装は Phase 1 以降で追加予定です。
+# 現時点（Phase 0）では以下のディレクトリ／ファイルは存在しません:
+#   - src/server/
+#   - src/server/requirements.txt
+#   - src/server/local.settings.json.example
+#
+# 実装が追加されたタイミングで、具体的なセットアップ手順をここに記載します。
+
 cd src/server
 
 # Python 仮想環境
