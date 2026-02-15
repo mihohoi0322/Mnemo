@@ -3,6 +3,7 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "python",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AZURE_AI_PROJECT_ENDPOINT": "",
     "AZURE_AI_PROJECT_CONNECTION_STRING": "",
     "AZURE_OPENAI_DEPLOYMENT_VISION": "gpt-5-mini",
     "AZURE_OPENAI_DEPLOYMENT_EMBEDDING": "text-embedding-3-small",

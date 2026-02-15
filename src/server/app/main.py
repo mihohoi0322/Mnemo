@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import health
+from app.routers import analyze, embed, health
 
 app = FastAPI(
     title="Mnemo API",
@@ -9,3 +9,5 @@ app = FastAPI(
 )
 
 app.include_router(health.router)
+app.include_router(analyze.router)
+app.include_router(embed.router)

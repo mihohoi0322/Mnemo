@@ -11,6 +11,9 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    # Azure AI Foundry のエンドポイント URL
+    azure_ai_project_endpoint: str = ""
+    # 旧: connection_string（後方互換用、未使用）
     azure_ai_project_connection_string: str = ""
     azure_openai_deployment_vision: str = "gpt-5-mini"
     azure_openai_deployment_embedding: str = "text-embedding-3-small"
