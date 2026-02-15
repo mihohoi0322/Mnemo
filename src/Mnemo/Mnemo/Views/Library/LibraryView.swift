@@ -79,7 +79,15 @@ struct LibraryView: View {
                 spacing: 12
             ) {
                 ForEach(viewModel.screenshots, id: \.id) { screenshot in
-                    ScreenshotThumbnail(screenshot: screenshot)
+                    NavigationLink {
+                        DetailView(
+                            screenshot: screenshot,
+                            repository: viewModel.repository,
+                            onDelete: { viewModel.loadScreenshots() }
+                        )
+                    } label: {
+                        ScreenshotThumbnail(screenshot: screenshot)
+                    }
                 }
             }
             .padding(.horizontal, 16)

@@ -12,7 +12,7 @@ final class LibraryViewModel {
 
     // MARK: - Dependencies
 
-    private let repository: ScreenshotRepository
+    private(set) var repository: ScreenshotRepository
 
     // MARK: - Init
 
