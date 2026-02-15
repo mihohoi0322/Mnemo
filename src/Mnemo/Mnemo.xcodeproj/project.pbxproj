@@ -26,6 +26,9 @@
 		AA000017 /* ScreenshotThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017 /* ScreenshotThumbnail.swift */; };
 		AA000018 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018 /* DetailView.swift */; };
 		AA000019 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019 /* DetailViewModel.swift */; };
+		AA000020 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000020 /* APIClient.swift */; };
+		AA000021 /* AnalysisRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000021 /* AnalysisRepository.swift */; };
+		AA000022 /* TagChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022 /* TagChip.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +51,9 @@
 		AB000017 /* ScreenshotThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotThumbnail.swift; sourceTree = "<group>"; };
 		AB000018 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		AB000019 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
+		AB000020 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		AB000021 /* AnalysisRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisRepository.swift; sourceTree = "<group>"; };
+		AB000022 /* TagChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagChip.swift; sourceTree = "<group>"; };
 		AC000001 /* Mnemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mnemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -156,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				AB000015 /* ScreenshotRepository.swift */,
+				AB000021 /* AnalysisRepository.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -164,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				AB000014 /* ImageStorage.swift */,
+				AB000020 /* APIClient.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -188,6 +196,7 @@
 			isa = PBXGroup;
 			children = (
 				AB000017 /* ScreenshotThumbnail.swift */,
+				AB000022 /* TagChip.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -288,6 +297,9 @@
 				AA000017 /* ScreenshotThumbnail.swift in Sources */,
 				AA000018 /* DetailView.swift in Sources */,
 				AA000019 /* DetailViewModel.swift in Sources */,
+				AA000020 /* APIClient.swift in Sources */,
+				AA000021 /* AnalysisRepository.swift in Sources */,
+				AA000022 /* TagChip.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
