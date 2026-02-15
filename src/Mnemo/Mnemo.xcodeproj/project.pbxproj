@@ -24,6 +24,8 @@
 		AA000015 /* ScreenshotRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000015 /* ScreenshotRepository.swift */; };
 		AA000016 /* LibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000016 /* LibraryViewModel.swift */; };
 		AA000017 /* ScreenshotThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000017 /* ScreenshotThumbnail.swift */; };
+		AA000018 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000018 /* DetailView.swift */; };
+		AA000019 /* DetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000019 /* DetailViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +46,8 @@
 		AB000015 /* ScreenshotRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotRepository.swift; sourceTree = "<group>"; };
 		AB000016 /* LibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViewModel.swift; sourceTree = "<group>"; };
 		AB000017 /* ScreenshotThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotThumbnail.swift; sourceTree = "<group>"; };
+		AB000018 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		AB000019 /* DetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModel.swift; sourceTree = "<group>"; };
 		AC000001 /* Mnemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mnemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -143,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				AB000016 /* LibraryViewModel.swift */,
+				AB000019 /* DetailViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -174,6 +179,7 @@
 		AE000014 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				AB000018 /* DetailView.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -222,7 +228,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					AF000001 = {
 						CreatedOnToolsVersion = 16.0;
@@ -280,6 +286,8 @@
 				AA000015 /* ScreenshotRepository.swift in Sources */,
 				AA000016 /* LibraryViewModel.swift in Sources */,
 				AA000017 /* ScreenshotThumbnail.swift in Sources */,
+				AA000018 /* DetailView.swift in Sources */,
+				AA000019 /* DetailViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +299,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -343,6 +352,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -353,6 +363,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -398,6 +409,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -483,7 +495,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = AI000001 /* Project object */;
 }
