@@ -88,6 +88,7 @@ struct LibraryView: View {
                     } label: {
                         ScreenshotThumbnail(screenshot: screenshot)
                     }
+                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 16)

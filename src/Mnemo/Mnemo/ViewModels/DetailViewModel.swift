@@ -7,6 +7,9 @@ final class DetailViewModel {
 
     var showDeleteConfirmation = false
     var errorMessage: String?
+    
+    /// キャッシュされた画像（一度だけディスクから読み込む）
+    private(set) var cachedImage: UIImage?
 
     // MARK: - Dependencies
 
@@ -18,6 +21,16 @@ final class DetailViewModel {
     init(screenshot: Screenshot, repository: ScreenshotRepository) {
         self.screenshot = screenshot
         self.repository = repository
+        // 初期化時に画像を読み込んでキャッシュする
+        self.cachedImage = Self.loadImage(from: screenshot.localPath)
+    }
+    
+    /// 画像をディスクから読み込む（プライベートヘルパー）
+    private static func loadImage(from relativePath: String) -> UIImage? {
+        guard let url = try? ImageStorage.resolveURL(relativePath: relativePath) else {
+            return nil
+        }
+        return UIImage(contentsOfFile: url.path())
     }
 
     // MARK: - Actions
@@ -35,14 +48,6 @@ final class DetailViewModel {
     }
 
     // MARK: - Computed
-
-    /// 画像の UIImage を取得する
-    var image: UIImage? {
-        guard let url = try? ImageStorage.resolveURL(relativePath: screenshot.localPath) else {
-            return nil
-        }
-        return UIImage(contentsOfFile: url.path())
-    }
 
     /// 作成日時の表示用テキスト
     var formattedCreatedAt: String {

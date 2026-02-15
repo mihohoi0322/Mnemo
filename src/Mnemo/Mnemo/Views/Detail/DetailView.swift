@@ -34,6 +34,7 @@ struct DetailView: View {
                 Spacer(minLength: 80)
             }
         }
+        .scrollDisabled(zoomScale > 1.0)
         .navigationTitle("詳細")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -81,7 +82,7 @@ struct DetailView: View {
 
     @ViewBuilder
     private var imagePreview: some View {
-        if let uiImage = viewModel.image {
+        if let uiImage = viewModel.cachedImage {
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFit()
@@ -97,7 +98,7 @@ struct DetailView: View {
                             lastZoomScale = zoomScale
                         }
                 )
-                .gesture(
+                .simultaneousGesture(
                     TapGesture(count: 2)
                         .onEnded {
                             withAnimation(.easeInOut(duration: 0.3)) {
