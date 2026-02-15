@@ -29,7 +29,7 @@ struct DetailView: View {
                     .padding(.horizontal, 16)
 
                 // MARK: - タグ
-                if viewModel.hasTags {
+                if viewModel.hasAutoTags {
                     tagsSection
                         .padding(.horizontal, 16)
                         .padding(.top, 12)

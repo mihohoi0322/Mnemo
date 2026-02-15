@@ -122,6 +122,11 @@ final class DetailViewModel {
         !screenshot.tags.isEmpty
     }
 
+    /// 自動タグが存在するか
+    var hasAutoTags: Bool {
+        !autoTags.isEmpty
+    }
+
     /// OCR テキストが存在するか
     var hasOCRText: Bool {
         screenshot.ocrText != nil

@@ -143,8 +143,24 @@ final class APIClient {
 
     /// 共通の HTTP リクエスト送信ロジック
     private func performRequest<T: Decodable>(path: String, body: some Encodable) async throws -> T {
-        // URL 構築
-        guard let url = URL(string: path, relativeTo: baseURL) else {
+        // URL 構築（baseURL のパス・クエリを維持したまま path を結合）
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
+            throw APIClientError.invalidURL
+        }
+
+        let basePath = components.path
+        // path の先頭の "/" は一度取り除いて結合する
+        let relativePath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+
+        if basePath.isEmpty || basePath == "/" {
+            components.path = "/" + relativePath
+        } else if basePath.hasSuffix("/") {
+            components.path = basePath + relativePath
+        } else {
+            components.path = basePath + "/" + relativePath
+        }
+
+        guard let url = components.url else {
             throw APIClientError.invalidURL
         }
 
@@ -153,6 +169,7 @@ final class APIClient {
         urlRequest.httpMethod = "POST"
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
+        urlRequest.setValue(apiKey, forHTTPHeaderField: "x-functions-key")
         urlRequest.setValue(deviceId, forHTTPHeaderField: "X-Device-ID")
 
         // ボディをエンコード
