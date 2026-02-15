@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-from typing import List
-
 from pydantic import BaseModel, Field
 
 
@@ -14,7 +10,7 @@ class EmbedRequest(BaseModel):
 class EmbedResponse(BaseModel):
     """テキスト埋め込みレスポンス"""
 
-    embedding: List[float] = Field(
+    embedding: list[float] = Field(
         ..., description="512 次元の埋め込みベクトル"
     )
 
@@ -28,6 +24,6 @@ class SearchEmbedRequest(BaseModel):
 class SearchEmbedResponse(BaseModel):
     """検索クエリ埋め込みレスポンス"""
 
-    embedding: List[float] = Field(
+    embedding: list[float] = Field(
         ..., description="512 次元の埋め込みベクトル"
     )

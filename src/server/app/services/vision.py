@@ -1,10 +1,7 @@
 """Vision API サービス — gpt-5-mini による画像解析（OCR + タグ + 説明文）"""
 
-from __future__ import annotations
-
 import json
 import logging
-from typing import Dict, List, Optional
 
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
@@ -56,8 +53,8 @@ def _get_openai_client():
 
 
 async def analyze_image(
-    image_base64: str, language_hint: Optional[str] = None
-) -> Dict:
+    image_base64: str, language_hint: str | None = None
+) -> dict:
     """
     画像を gpt-5-mini で解析し、OCR テキスト・説明文・タグを返す。
 
@@ -74,7 +71,7 @@ async def analyze_image(
     """
     openai_client = _get_openai_client()
 
-    user_content: List[Dict] = []
+    user_content: list[dict] = []
 
     # 言語ヒントがある場合はテキストメッセージを追加
     if language_hint:

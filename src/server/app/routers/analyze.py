@@ -1,9 +1,6 @@
 """画像解析エンドポイント — POST /analyze"""
 
-from __future__ import annotations
-
 import logging
-from typing import List
 
 from fastapi import APIRouter, HTTPException
 
@@ -49,7 +46,7 @@ async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
             )
         )
 
-        embedding: List[float] = []
+        embedding: list[float] = []
         if embedding_input.strip():
             embedding = await generate_embedding(embedding_input)
         else:

@@ -1,9 +1,6 @@
 """Embedding サービス — text-embedding-3-small によるベクトル生成"""
 
-from __future__ import annotations
-
 import logging
-from typing import List
 
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
@@ -23,7 +20,7 @@ def _get_openai_client():
     return project_client.get_openai_client()
 
 
-async def generate_embedding(text: str) -> List[float]:
+async def generate_embedding(text: str) -> list[float]:
     """
     テキストから埋め込みベクトルを生成する。
 
