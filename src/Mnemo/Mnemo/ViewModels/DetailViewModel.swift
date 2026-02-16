@@ -27,8 +27,10 @@ final class DetailViewModel {
         self.cachedImage = Self.loadImage(from: screenshot.localPath)
     }
 
-    /// @Environment からの遅延注入用
+    /// @Environment からの遅延注入用（一度だけ設定される）
     func setAnalysisQueue(_ queue: AnalysisQueue) {
+        // Ensure the analysisQueue is only initialized once, even if called multiple times
+        guard analysisQueue == nil else { return }
         self.analysisQueue = queue
     }
     
@@ -143,11 +145,19 @@ final class DetailViewModel {
 
     /// 手動リトライが可能か
     var canRetry: Bool {
-        analysisQueue?.canRetry(screenshot) ?? false
+        guard let analysisQueue else {
+            assertionFailure("DetailViewModel.analysisQueue is nil; retry availability cannot be determined. Verify dependency injection.")
+            return false
+        }
+        return analysisQueue.canRetry(screenshot)
     }
 
     /// 手動リトライ実行
     func retry() {
-        analysisQueue?.retryManually(screenshot)
+        guard let analysisQueue else {
+            assertionFailure("DetailViewModel.analysisQueue is nil; cannot perform manual retry. Verify dependency injection.")
+            return
+        }
+        analysisQueue.retryManually(screenshot)
     }
 }
