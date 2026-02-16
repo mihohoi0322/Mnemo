@@ -3,6 +3,7 @@ import PhotosUI
 
 struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AnalysisQueue.self) private var analysisQueue
     @State private var viewModel: LibraryViewModel?
     @State private var selectedItems: [PhotosPickerItem] = []
 
@@ -43,7 +44,8 @@ struct LibraryView: View {
             .task {
                 if viewModel == nil {
                     let vm = LibraryViewModel(
-                        repository: ScreenshotRepository(modelContext: modelContext)
+                        repository: ScreenshotRepository(modelContext: modelContext),
+                        analysisQueue: analysisQueue
                     )
                     viewModel = vm
                 }

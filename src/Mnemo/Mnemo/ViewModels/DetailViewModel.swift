@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 @Observable
 final class DetailViewModel {
 
@@ -15,6 +16,7 @@ final class DetailViewModel {
 
     let screenshot: Screenshot
     private let repository: ScreenshotRepository
+    private var analysisQueue: AnalysisQueue?
 
     // MARK: - Init
 
@@ -23,6 +25,11 @@ final class DetailViewModel {
         self.repository = repository
         // 初期化時に画像を読み込んでキャッシュする
         self.cachedImage = Self.loadImage(from: screenshot.localPath)
+    }
+
+    /// @Environment からの遅延注入用
+    func setAnalysisQueue(_ queue: AnalysisQueue) {
+        self.analysisQueue = queue
     }
     
     /// 画像をディスクから読み込む（プライベートヘルパー）
@@ -130,5 +137,17 @@ final class DetailViewModel {
     /// OCR テキストが存在するか
     var hasOCRText: Bool {
         screenshot.ocrText != nil
+    }
+
+    // MARK: - Retry
+
+    /// 手動リトライが可能か
+    var canRetry: Bool {
+        analysisQueue?.canRetry(screenshot) ?? false
+    }
+
+    /// 手動リトライ実行
+    func retry() {
+        analysisQueue?.retryManually(screenshot)
     }
 }
