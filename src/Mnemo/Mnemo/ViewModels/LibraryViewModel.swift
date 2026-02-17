@@ -14,11 +14,11 @@ final class LibraryViewModel {
     // MARK: - Dependencies
 
     private(set) var repository: ScreenshotRepository
-    private let analysisQueue: AnalysisQueue?
+    private let analysisQueue: AnalysisQueue
 
     // MARK: - Init
 
-    init(repository: ScreenshotRepository, analysisQueue: AnalysisQueue? = nil) {
+    init(repository: ScreenshotRepository, analysisQueue: AnalysisQueue) {
         self.repository = repository
         self.analysisQueue = analysisQueue
     }
@@ -68,7 +68,7 @@ final class LibraryViewModel {
         }
 
         // 解析キューに追加
-        analysisQueue?.enqueue(result.screenshots)
+        analysisQueue.enqueue(result.screenshots)
 
         // 一覧を更新
         loadScreenshots()

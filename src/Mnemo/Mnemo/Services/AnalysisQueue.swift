@@ -6,7 +6,7 @@ import Network
 ///
 /// 責務:
 /// - 画像インポート後の自動解析キューイング
-/// - 指数バックオフによる自動リトライ（30秒 / 2分 / 5分、最大 3 回）
+/// - 指数バックオフによる自動リトライ（30秒 / 2分 / 5分で最大 3 回試行 = 初回 + リトライ 2 回）
 /// - NWPathMonitor によるオフライン検知・復帰時自動再開
 /// - 手動リトライ（上限なし、10 秒クールダウン）
 /// - 削除済み Screenshot の解析結果破棄
@@ -80,6 +80,21 @@ final class AnalysisQueue {
     /// Screenshot はすでに status: .pending で作成されている前提。
     /// キューへの追加 = 処理ループの起動トリガー。
     func enqueue(_ screenshots: [Screenshot]) {
+        // すべての Screenshot が .pending 状態であることを検証
+        var didChangeStatus = false
+        for screenshot in screenshots {
+            if screenshot.status != .pending {
+                assertionFailure("AnalysisQueue.enqueue(_:) expects screenshots with status `.pending`.")
+                screenshot.status = .pending
+                screenshot.updatedAt = Date()
+                didChangeStatus = true
+            }
+        }
+
+        if didChangeStatus {
+            try? modelContext.save()
+        }
+
         updatePendingCount()
         triggerProcessing()
     }
@@ -89,6 +104,7 @@ final class AnalysisQueue {
     /// 上限なし。ただし直近失敗から 10 秒のクールダウンを設ける。
     func retryManually(_ screenshot: Screenshot) {
         guard screenshot.status == .failed else { return }
+        guard canRetry(screenshot) else { return }
 
         screenshot.status = .pending
         screenshot.updatedAt = Date()
@@ -109,13 +125,15 @@ final class AnalysisQueue {
 
     private func startMonitoring() {
         pathMonitor.pathUpdateHandler = { [weak self] path in
+            let pathStatus = path.status
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 let wasOffline = !self.isOnline
-                self.isOnline = (path.status == .satisfied)
+                let isCurrentlyOnline = (pathStatus == .satisfied)
+                self.isOnline = isCurrentlyOnline
 
                 // オフライン → オンライン復帰時に処理再開
-                if wasOffline && self.isOnline {
+                if wasOffline && isCurrentlyOnline {
                     self.triggerProcessing()
                 }
             }
@@ -183,6 +201,8 @@ final class AnalysisQueue {
             do {
                 try await analysisRepository.analyzeScreenshot(screenshot)
                 // 成功 → 次の pending へ
+                // 解析後に削除されていないか再確認
+                guard screenshotStillExists(screenshot.id) else { continue }
             } catch {
                 // 解析後に削除済みチェック
                 guard screenshotStillExists(screenshot.id) else { continue }
@@ -203,7 +223,11 @@ final class AnalysisQueue {
 
                     let delay = backoffInterval(for: screenshot.retryCount)
                     print("[AnalysisQueue] \(delay)秒後にリトライします")
-                    try? await Task.sleep(for: .seconds(delay))
+                    do {
+                        try await Task.sleep(for: .seconds(delay))
+                    } catch is CancellationError {
+                        break
+                    }
                 }
             }
         }
@@ -222,10 +246,10 @@ final class AnalysisQueue {
     /// pending な Screenshot を取得する（作成日順）
     private func fetchPendingScreenshots() -> [Screenshot] {
         let descriptor = FetchDescriptor<Screenshot>(
+            predicate: #Predicate { $0.status == .pending },
             sortBy: [SortDescriptor(\.createdAt, order: .forward)]
         )
-        guard let all = try? modelContext.fetch(descriptor) else { return [] }
-        return all.filter { $0.status == .pending }
+        return (try? modelContext.fetch(descriptor)) ?? []
     }
 
     /// pendingCount を更新する
@@ -235,8 +259,14 @@ final class AnalysisQueue {
 
     /// Screenshot がまだ存在するか確認する（削除済み検出）
     private func screenshotStillExists(_ id: UUID) -> Bool {
-        let all = fetchAllScreenshots()
-        return all.contains { $0.id == id }
+        let descriptor = FetchDescriptor<Screenshot>(
+            predicate: #Predicate { $0.id == id },
+            fetchLimit: 1
+        )
+        guard let result = try? modelContext.fetch(descriptor) else {
+            return false
+        }
+        return !result.isEmpty
     }
 
     /// エラーが一時的かどうかを判定する
@@ -263,7 +293,11 @@ final class AnalysisQueue {
         switch retryCount {
         case 1: return 30
         case 2: return 120
-        default: return 300
+        case 3: return 300
+        default:
+            // maxAutoRetries により retryCount は 3 を超えない想定だが、
+            // 万が一それ以上になった場合も 5 分間隔でリトライする
+            return 300
         }
     }
 }

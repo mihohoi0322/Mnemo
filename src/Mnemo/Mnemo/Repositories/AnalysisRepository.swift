@@ -49,9 +49,10 @@ final class AnalysisRepository {
         // 4. レスポンスから SwiftData に保存
         saveAnalysisResult(response, for: screenshot)
 
-        // 5. status を success に更新
+        // 5. status を success に更新（エラー情報もクリア）
         screenshot.status = .success
         screenshot.errorMessage = nil
+        screenshot.retryCount = 0
         screenshot.updatedAt = Date()
         try modelContext.save()
     }
