@@ -2,8 +2,9 @@
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from app.auth import verify_api_key
 from app.schemas.embed import (
     EmbedRequest,
     EmbedResponse,
@@ -18,7 +19,9 @@ router = APIRouter()
 
 
 @router.post("/embed", response_model=EmbedResponse)
-async def embed(request: EmbedRequest) -> EmbedResponse:
+async def embed(
+    request: EmbedRequest, device_id: str = Depends(verify_api_key)
+) -> EmbedResponse:
     """テキストから埋め込みベクトルを生成する。"""
     try:
         logger.info("Generating embedding for text (%d chars)", len(request.text))
@@ -53,7 +56,9 @@ async def embed(request: EmbedRequest) -> EmbedResponse:
 
 
 @router.post("/search/embed", response_model=SearchEmbedResponse)
-async def search_embed(request: SearchEmbedRequest) -> SearchEmbedResponse:
+async def search_embed(
+    request: SearchEmbedRequest, device_id: str = Depends(verify_api_key)
+) -> SearchEmbedResponse:
     """検索クエリから埋め込みベクトルを生成する。"""
     try:
         logger.info("Generating search embedding for query (%d chars)", len(request.query))

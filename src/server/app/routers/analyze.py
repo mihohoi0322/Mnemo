@@ -2,8 +2,9 @@
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
+from app.auth import verify_api_key
 from app.schemas.analyze import AnalyzeRequest, AnalyzeResponse, TagItem
 from app.services.embedding import generate_embedding
 from app.services.vision import analyze_image
@@ -14,7 +15,9 @@ router = APIRouter()
 
 
 @router.post("/analyze", response_model=AnalyzeResponse)
-async def analyze(request: AnalyzeRequest) -> AnalyzeResponse:
+async def analyze(
+    request: AnalyzeRequest, device_id: str = Depends(verify_api_key)
+) -> AnalyzeResponse:
     """
     画像を AI で解析し、OCR テキスト・タグ・説明文・埋め込みベクトルを返す。
 
