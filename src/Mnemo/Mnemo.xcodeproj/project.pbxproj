@@ -29,6 +29,7 @@
 		AA000020 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000020 /* APIClient.swift */; };
 		AA000021 /* AnalysisRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000021 /* AnalysisRepository.swift */; };
 		AA000022 /* TagChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000022 /* TagChip.swift */; };
+		AA000023 /* AnalysisQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000023 /* AnalysisQueue.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		AB000020 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		AB000021 /* AnalysisRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisRepository.swift; sourceTree = "<group>"; };
 		AB000022 /* TagChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagChip.swift; sourceTree = "<group>"; };
+		AB000023 /* AnalysisQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisQueue.swift; sourceTree = "<group>"; };
 		AC000001 /* Mnemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mnemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -172,6 +174,7 @@
 			children = (
 				AB000014 /* ImageStorage.swift */,
 				AB000020 /* APIClient.swift */,
+				AB000023 /* AnalysisQueue.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 				AA000020 /* APIClient.swift in Sources */,
 				AA000021 /* AnalysisRepository.swift in Sources */,
 				AA000022 /* TagChip.swift in Sources */,
+				AA000023 /* AnalysisQueue.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct DetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(AnalysisQueue.self) private var analysisQueue
     @State private var viewModel: DetailViewModel
     @State private var zoomScale: CGFloat = 1.0
     @State private var lastZoomScale: CGFloat = 1.0
@@ -56,6 +57,9 @@ struct DetailView: View {
                     Image(systemName: "trash")
                 }
             }
+        }
+        .task {
+            viewModel.setAnalysisQueue(analysisQueue)
         }
         .confirmationDialog(
             "この画像を削除しますか？",
@@ -199,6 +203,18 @@ struct DetailView: View {
                 Text(viewModel.statusText)
                     .font(.subheadline)
                     .foregroundStyle(viewModel.statusColor)
+
+                Spacer()
+
+                // 再試行ボタン
+                if viewModel.canRetry {
+                    Button {
+                        viewModel.retry()
+                    } label: {
+                        Label("再試行", systemImage: "arrow.clockwise")
+                            .font(.subheadline)
+                    }
+                }
             }
 
             Divider()

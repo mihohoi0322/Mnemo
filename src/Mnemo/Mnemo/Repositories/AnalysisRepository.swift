@@ -27,45 +27,34 @@ final class AnalysisRepository {
     /// 4. レスポンスから OCRText, Tag(auto), Embedding を作成
     /// 5. status を .success に更新
     ///
-    /// エラー時は status を .failed に更新し、errorMessage を記録する
-    func analyzeScreenshot(_ screenshot: Screenshot) async {
+    /// 失敗時はエラーを throw する。ステータス管理は呼び出し元（AnalysisQueue）の責務。
+    func analyzeScreenshot(_ screenshot: Screenshot) async throws {
         // 1. status を processing に更新
         screenshot.status = .processing
         screenshot.updatedAt = Date()
         try? modelContext.save()
 
-        do {
-            // 2. 画像ファイルを読み込み（バックグラウンドで実行）
-            let imageURL = try ImageStorage.resolveURL(relativePath: screenshot.localPath)
-            let imageData = try await Task.detached(priority: .background) {
-                try Data(contentsOf: imageURL)
-            }.value
+        // 2. 画像ファイルを読み込み（バックグラウンドで実行）
+        let imageURL = try ImageStorage.resolveURL(relativePath: screenshot.localPath)
+        let imageData = try await Task.detached(priority: .background) {
+            try Data(contentsOf: imageURL)
+        }.value
 
-            // 3. APIClient で /analyze に送信
-            let response = try await apiClient.analyze(
-                imageData: imageData,
-                imageId: screenshot.id
-            )
+        // 3. APIClient で /analyze に送信
+        let response = try await apiClient.analyze(
+            imageData: imageData,
+            imageId: screenshot.id
+        )
 
-            // 4. レスポンスから SwiftData に保存
-            saveAnalysisResult(response, for: screenshot)
+        // 4. レスポンスから SwiftData に保存
+        saveAnalysisResult(response, for: screenshot)
 
-            // 5. status を success に更新
-            screenshot.status = .success
-            screenshot.errorMessage = nil
-            screenshot.updatedAt = Date()
-            try modelContext.save()
-
-        } catch {
-            // エラー時: status を failed に更新
-            screenshot.status = .failed
-            screenshot.errorMessage = error.localizedDescription
-            screenshot.retryCount += 1
-            screenshot.updatedAt = Date()
-            try? modelContext.save()
-
-            print("[AnalysisRepository] 解析に失敗: \(error.localizedDescription)")
-        }
+        // 5. status を success に更新（エラー情報もクリア）
+        screenshot.status = .success
+        screenshot.errorMessage = nil
+        screenshot.retryCount = 0
+        screenshot.updatedAt = Date()
+        try modelContext.save()
     }
 
     // MARK: - Private Methods

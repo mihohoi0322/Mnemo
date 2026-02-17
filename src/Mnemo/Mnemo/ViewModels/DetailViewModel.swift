@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 @Observable
 final class DetailViewModel {
 
@@ -15,6 +16,7 @@ final class DetailViewModel {
 
     let screenshot: Screenshot
     private let repository: ScreenshotRepository
+    private var analysisQueue: AnalysisQueue?
 
     // MARK: - Init
 
@@ -23,6 +25,13 @@ final class DetailViewModel {
         self.repository = repository
         // 初期化時に画像を読み込んでキャッシュする
         self.cachedImage = Self.loadImage(from: screenshot.localPath)
+    }
+
+    /// @Environment からの遅延注入用（一度だけ設定される）
+    func setAnalysisQueue(_ queue: AnalysisQueue) {
+        // Ensure the analysisQueue is only initialized once, even if called multiple times
+        guard analysisQueue == nil else { return }
+        self.analysisQueue = queue
     }
     
     /// 画像をディスクから読み込む（プライベートヘルパー）
@@ -130,5 +139,25 @@ final class DetailViewModel {
     /// OCR テキストが存在するか
     var hasOCRText: Bool {
         screenshot.ocrText != nil
+    }
+
+    // MARK: - Retry
+
+    /// 手動リトライが可能か
+    var canRetry: Bool {
+        guard let analysisQueue else {
+            assertionFailure("DetailViewModel.analysisQueue is nil; retry availability cannot be determined. Verify dependency injection.")
+            return false
+        }
+        return analysisQueue.canRetry(screenshot)
+    }
+
+    /// 手動リトライ実行
+    func retry() {
+        guard let analysisQueue else {
+            assertionFailure("DetailViewModel.analysisQueue is nil; cannot perform manual retry. Verify dependency injection.")
+            return
+        }
+        analysisQueue.retryManually(screenshot)
     }
 }

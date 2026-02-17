@@ -1,6 +1,7 @@
 import SwiftUI
 import PhotosUI
 
+@MainActor
 @Observable
 final class LibraryViewModel {
 
@@ -13,11 +14,13 @@ final class LibraryViewModel {
     // MARK: - Dependencies
 
     private(set) var repository: ScreenshotRepository
+    private let analysisQueue: AnalysisQueue
 
     // MARK: - Init
 
-    init(repository: ScreenshotRepository) {
+    init(repository: ScreenshotRepository, analysisQueue: AnalysisQueue) {
         self.repository = repository
+        self.analysisQueue = analysisQueue
     }
 
     // MARK: - Actions
@@ -63,6 +66,9 @@ final class LibraryViewModel {
         if totalFailed > 0 {
             errorMessage = "\(totalFailed)枚の画像が取り込めませんでした"
         }
+
+        // 解析キューに追加
+        analysisQueue.enqueue(result.screenshots)
 
         // 一覧を更新
         loadScreenshots()
